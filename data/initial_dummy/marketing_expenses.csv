@@ -1,0 +1,11 @@
+﻿campaign_id,campaign_name,start_date,end_date,budget,target_audience
+1,Summer Sale,2024-06-15,2024-07-15,10000,Fashion-conscious individuals
+2,Back to School,2024-08-01,2024-09-01,8000,Parents with school-aged children
+3,Holiday Gift Guide,2024-11-15,2024-12-25,15000,Shoppers seeking holiday gifts
+4,Tech Tuesday,2024-01-15,2024-03-15,5000,Tech enthusiasts
+5,Spring Refresh,2024-04-01,2024-05-31,12000,Home decor enthusiasts
+6,Cyber Monday Blitz,2024-11-25,2024-11-26,20000,Online shoppers
+7,"New Year, New You",2025-01-01,2025-01-31,7000,Health and fitness enthusiasts
+8,Valentine's Day Romance,2025-02-01,2025-02-14,6000,Couples and romantics
+9,Spring Break Getaway,2025-03-01,2025-03-31,9000,Travelers seeking spring break destinations
+10,Earth Day Sustainability,2025-04-22,2025-04-22,3000,Eco-conscious consumers
