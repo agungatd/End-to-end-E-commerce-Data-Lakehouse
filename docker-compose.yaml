@@ -1,0 +1,58 @@
+version: '3'
+x-airflow-common:
+  &airflow-common
+  build: ./containers/airflow/.
+  environment:
+    &airflow-common-env
+    - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+    - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://${PG_USER}:${PG_PASS}@postgres/airflow
+    - AIRFLOW__WEBSERVER__SECRET_KEY=${AIRFLOW__WEBSERVER__SECRET_KEY}
+    - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./containers/airflow/logs:/opt/airflow/logs
+  user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
+  entrypoint: /entrypoint.sh
+  depends_on:
+    postgres:
+      condition: service_healthy
+      
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASS}
+      POSTGRES_DB: airflow
+    volumes:
+      - ecom-lakehouse-pg-db-vol:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 60s
+      retries: 5
+    restart: always
+
+  airflow-webserver:
+    <<: *airflow-common
+    command: webserver
+    ports:
+      - 8080:8080
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+    restart: always
+
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    healthcheck:
+      test: ["CMD-SHELL", 'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"']
+      interval: 60s
+      timeout: 10s
+      retries: 5
+    restart: always
+
+volumes:
+  ecom-lakehouse-pg-db-vol:
