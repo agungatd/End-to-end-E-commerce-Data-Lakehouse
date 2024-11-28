@@ -1,0 +1,6 @@
+customer_id,name,Gender,email,phone,country,registration_date,acquisition_channel_id
+999999991,John Doe-test,M,John.Doe-test@mail.com,+0011239879877,USA,2024-01-01T07:16:37,11
+999999992,Jane Doe-test,F,Jane.Doe-test@mail.com,+0011239879871,USA,2024-01-02T00:21:00,7
+999999993,Elon Musk-test,M,Elon.Musk-test@mail.com,+0011239879872,USA,2024-01-01T09:46:43,10
+999999994,Bill Gates-test,M,Bill.Gates-test@mail.com,+0011239879873,USA,2024-01-02T16:26:29,1
+999999995,Eleanor Rigby-test,M,Eleanor.Rigby-test@mail.com,+00441234567891,GBR,2024-01-01T18:34:50,5
