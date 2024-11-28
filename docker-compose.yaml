@@ -4,7 +4,7 @@ x-airflow-common:
   environment:
     &airflow-common-env
     - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-    - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-db:5433/airflow
+    - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-db:5432/airflow
     - AIRFLOW__WEBSERVER__SECRET_KEY=${AIRFLOW__WEBSERVER__SECRET_KEY}
     - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
   volumes:
@@ -27,7 +27,7 @@ services:
     volumes:
       - airflow-db-pg-db-vol:/var/lib/postgresql/data
     ports:
-      - 5432:5433
+      - 5433:5432
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
       interval: 60s
