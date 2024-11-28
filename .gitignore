@@ -162,3 +162,5 @@ cython_debug/
 #.idea/
 
 logs/*
+secrets/*
+!secrets/*.temp*
