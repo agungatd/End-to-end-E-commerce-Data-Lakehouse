@@ -1,11 +1,10 @@
-version: '3'
 x-airflow-common:
   &airflow-common
   build: ./containers/airflow/.
   environment:
     &airflow-common-env
     - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-    - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://${PG_USER}:${PG_PASS}@postgres/airflow
+    - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-db:5433/airflow
     - AIRFLOW__WEBSERVER__SECRET_KEY=${AIRFLOW__WEBSERVER__SECRET_KEY}
     - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
   volumes:
@@ -17,15 +16,35 @@ x-airflow-common:
     postgres:
       condition: service_healthy
       
+name: ecom-lakehouse
 services:
+  airflow-db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - airflow-db-pg-db-vol:/var/lib/postgresql/data
+    ports:
+      - 5432:5433
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 60s
+      retries: 5
+    restart: always
+  # postgres service is a db for storing the source dummy data.
   postgres:
     image: postgres:13
     environment:
       POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD: ${PG_PASS}
-      POSTGRES_DB: airflow
+      POSTGRES_DB: ecommerce
     volumes:
       - ecom-lakehouse-pg-db-vol:/var/lib/postgresql/data
+      - ./data/initial_dummy:/docker-entrypoint-initdb.d
+    ports:
+      - 5432:5432
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
       interval: 60s
@@ -56,3 +75,4 @@ services:
 
 volumes:
   ecom-lakehouse-pg-db-vol:
+  airflow-db-pg-db-vol:

@@ -1,11 +1,13 @@
-﻿product_id,name,description,price,category_id,created_at,updated_at
-1,product abc,,931,5,2024-11-26T18:13:24,2024-11-28T09:42:51
-2,product abc v2,,308,4,2024-11-26T18:13:24,2024-11-28T09:42:51
-3,product abc v3,,275,3,2024-11-26T18:13:24,2024-11-28T09:42:51
-4,product aaa ,,972,4,2024-11-26T18:13:24,2024-11-28T09:42:51
-5,product aaa v2,,432,5,2024-11-26T18:13:24,2024-11-28T09:42:51
-6,product xyz,,986,2,2024-11-26T18:13:24,2024-11-28T09:42:51
-7,product cde,,101,3,2024-11-26T18:13:24,2024-11-28T09:42:51
-8,product cde v2,,676,3,2024-11-26T18:13:24,2024-11-28T09:42:51
-9,product def,,772,4,2024-11-26T18:13:24,2024-11-28T09:42:51
-10,product aaa v3,,443,5,2024-11-26T18:13:24,2024-11-28T09:42:51
+﻿channel_id,category,channel_name,description
+1,Search,Organic Search,Organic search is all about showing up on search engine results pages. Leverage using SEO
+2,Search,Paid Search,"pay-per-click, is advertising on search engines. Plus, with platforms like Google Ads, we can place ads directly in search results and even on partner websites."
+3,Social Media,Organic Social Media,"for boosting brand awareness, shaping company’s personality, and sharing content published in social media, like blog posts or videos."
+4,Social Media,Paid Social Media,"For example, sponsored posts on Facebook, X, or Instagram to get content seen by more people (targeted audiences)."
+5,Massaging,Email,"Email marketing, Whether it’s a birthday wish or a valuable promo, email is a great way to connect with our audience. It’s a direct line to their inbox, bypassing the noise of social media and search engines."
+6,Massaging,Whatsapp,direct marketing
+7,Customer,Refferals,Referral marketing leverages the trust of personal recommendations to drive new customer acquisition.
+8,Events,Conferences,"conferences, webinars, and trade shows to connect with potential customers."
+9,Events,Webminars,
+10,Traditional Ad,TV,
+11,Traditional Ad,Radio,
+12,Traditional Ad,Print Media,

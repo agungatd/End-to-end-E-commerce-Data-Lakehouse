@@ -1,11 +1,6 @@
-﻿inventory_id,product_id,quantity,warehouse_location,updated_at
-1,1,10,USA,2024-11-28T09:22:13
-2,2,1,GBR,2024-11-28T09:22:13
-3,3,10,IDN,2024-11-28T09:22:13
-4,4,5,RUS,2024-11-28T09:22:13
-5,5,8,CHN,2024-11-28T09:22:13
-6,6,8,JPN,2024-11-28T09:22:13
-7,7,3,USA,2024-11-28T09:22:13
-8,8,6,CHN,2024-11-28T09:22:13
-9,9,10,IDN,2024-11-28T09:22:13
-10,10,5,CHN,2024-11-28T09:22:13
+﻿category_id,category_name,parent_category_id
+1,ABC,
+2,CDE,
+3,DEF,
+4,XYZ,
+5,AAA,1
