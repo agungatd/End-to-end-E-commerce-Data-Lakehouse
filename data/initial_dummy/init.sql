@@ -1,9 +1,12 @@
 -- ref: https://medium.com/@asuarezaceves/initializing-a-postgresql-database-with-a-dataset-using-docker-compose-a-step-by-step-guide-3feebd5b1545
+-- DROP DATABASE ecommerce;
+-- CREATE DATABASE ecommerce;
 CREATE TABLE customer_acquisition_channels (
     channel_id SERIAL PRIMARY KEY,
     category VARCHAR(30) DEFAULT 'other',
     channel_name VARCHAR(100) NOT NULL,
-    description TEXT
+    description TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
 );
 
 COPY customer_acquisition_channels
@@ -30,7 +33,8 @@ CSV HEADER;
 CREATE TABLE product_categories (
     category_id SERIAL PRIMARY KEY,
     category_name VARCHAR(100) NOT NULL,
-    parent_category_id INTEGER REFERENCES product_categories(category_id)
+    parent_category_id INTEGER REFERENCES product_categories(category_id),
+    created_at TIMESTAMP DEFAULT NOW()
 );
 
 COPY product_categories
@@ -58,6 +62,7 @@ CREATE TABLE inventory (
     product_id INTEGER REFERENCES products(product_id),
     quantity INTEGER NOT NULL,
     warehouse_location VARCHAR(100),
+    created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -84,7 +89,8 @@ CREATE TABLE orders (
     order_date TIMESTAMP DEFAULT NOW(),
     order_status VARCHAR(20) NOT NULL,
     total_amount DECIMAL(10, 2),
-    payment_method VARCHAR(50)
+    payment_method VARCHAR(50),
+    created_at TIMESTAMP DEFAULT NOW()
 );
 
 COPY orders
@@ -97,7 +103,8 @@ CREATE TABLE order_items (
     order_id INTEGER REFERENCES orders(order_id),
     product_id INTEGER REFERENCES products(product_id),
     quantity INTEGER NOT NULL,
-    price DECIMAL(16, 2)
+    price DECIMAL(16, 2),
+    created_at TIMESTAMP DEFAULT NOW()
 );
 
 COPY order_items
