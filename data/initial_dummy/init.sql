@@ -111,3 +111,11 @@ COPY order_items
 FROM '/docker-entrypoint-initdb.d/order_items.csv'
 DELIMITER ','
 CSV HEADER;
+
+-- Metadata
+CREATE TABLE meta_migration (
+	table_name VARCHAR(100) UNIQUE NOT NULL,
+	latest_cutoff_at TIMESTAMP NOT NULL,
+	created_at TIMESTAMP DEFAULT now()
+);
+-- INSERT INTO meta_migration VALUES ('customers', '2020-01-05 02:23:48.000', )

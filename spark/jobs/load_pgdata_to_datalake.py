@@ -1,9 +1,24 @@
 from pyspark.sql import SparkSession
 
-def migrate(spark, jdbc_url, jdbc_prop, schema,  table_name):
+def migrate(spark, jdbc_url, schema,  table_name):
     # Read data from PostgreSQL
     print("Reading data from PostgreSQL...")
-    postgres_df = spark.read.jdbc(url=jdbc_url, table=table_name, properties=jdbc_properties)
+    if table_name == 'customers':
+        filter_col = 'registration_date'
+    else:
+        filter_col = 'created_at'
+
+    query = f"""
+        select * from {table}
+        where {filter_col} > '2020-01-05 02:23:48.000'
+    """
+    postgres_df = spark.read.format('jdbc') \
+                    .option("url", jdbc_url) \
+                    .option("query",query) \
+                    .option("user","postgres") \
+                    .option("password","postgres") \
+                    .option("driver","org.postgresql.Driver") \
+                    .load()
 
     # Show a preview of the data
     postgres_df.show(5)
@@ -27,16 +42,17 @@ if __name__=="__main__":
     schema = "ecommerce"
     tables = ["customer_acquisition_channels", "customers", "inventory",
               "order_items", "orders", "product_categories", "products"]
+    tables = ['customers']
 
     # PostgreSQL connection properties
     jdbc_url = "jdbc:postgresql://postgres/ecommerce"
-    jdbc_properties = {
-        "user": "postgres",
-        "password": "postgres",
-        "driver": "org.postgresql.Driver"
-    }
+    # jdbc_properties = {
+    #     "user": "postgres",
+    #     "password": "postgres",
+    #     "driver": "org.postgresql.Driver"
+    # }
     for table in tables:
-        migrate(spark, jdbc_url, jdbc_properties, schema, table)
+        migrate(spark, jdbc_url, schema, table)
 
     # Stop spark session
     spark.stop()
