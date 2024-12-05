@@ -163,7 +163,7 @@ cython_debug/
 
 logs/*
 
-secrets/*
+secrets/
 
 !*.temp*
 
