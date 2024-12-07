@@ -4,6 +4,8 @@ set -o errexit
 set -o nounset
 IFS=$(printf '\n\t')
 
+# Check OS
+
 # Docker
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
