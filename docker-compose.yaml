@@ -39,6 +39,8 @@ services:
       - postgres
     volumes:
       - ./containers/flask-api/app/app.py:/app/app.py
+    networks:
+      default_network:
   airflow-db:
     image: postgres:13-alpine3.20
     container_name: airflow-db
