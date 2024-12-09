@@ -26,8 +26,8 @@ def create_user():
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute(
-            "INSERT INTO customers (name, gender, email, phone, country, registration_date, acquisition_channel_id) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id;",
-            (data['name'], data['gender'], data['email'], data['phone'], data['country'], data['registration_date'], data['acquisition_channel_id'])
+            "INSERT INTO customers (customer_id, name, gender, email, phone, country, registration_date, acquisition_channel_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING customer_id;",
+            (data['customer_id'], data['name'], data['gender'], data['email'], data['phone'], data['country'], data['registration_date'], data['acquisition_channel_id'])
         )
         user_id = cursor.fetchone()[0]
         conn.commit()
@@ -35,7 +35,7 @@ def create_user():
         conn.close()
         return jsonify({'message': 'User created', 'user_id': user_id}), 201
     except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        return jsonify({'create_user error': str(e)}), 400
 
 # API: Add Products to Cart
 @app.route('/api/cart', methods=['POST'])
