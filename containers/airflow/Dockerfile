@@ -12,7 +12,31 @@ COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 USER airflow
+
+# Set Env variables from docker compose args for creating airflow admin.
+ARG AIRFLOW_ADMIN_USER
+ARG AIRFLOW_ADMIN_FIRST_NAME
+ARG AIRFLOW_ADMIN_LAST_NAME
+ARG AIRFLOW_ADMIN_EMAIL
+ARG AIRFLOW_ADMIN_PASS
+
+ENV AIRFLOW_ADMIN_USER ${AIRFLOW_ADMIN_USER}
+ENV AIRFLOW_ADMIN_FIRST_NAME ${AIRFLOW_ADMIN_FIRST_NAME}
+ENV AIRFLOW_ADMIN_LAST_NAME ${AIRFLOW_ADMIN_LAST_NAME}
+ENV AIRFLOW_ADMIN_EMAIL ${AIRFLOW_ADMIN_EMAIL}
+ENV AIRFLOW_ADMIN_PASS ${AIRFLOW_ADMIN_PASS}
+
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+RUN echo "Creating admin user..."
+RUN airflow users create \
+    --username $AIRFLOW_ADMIN_USER \
+    --firstname $AIRFLOW_ADMIN_FIRST_NAME \
+    --lastname $AIRFLOW_ADMIN_LAST_NAME \
+    --role Admin \
+    --email $AIRFLOW_ADMIN_EMAIL \
+    --password $AIRFLOW_ADMIN_PASS
 
 ENTRYPOINT ["./entrypoint.sh"]
