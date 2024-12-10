@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 log() {
     local filename="${BASH_SOURCE[0]##*/}"
@@ -28,11 +29,11 @@ set +a
 
 
 log "remove running containers"
-# docker compose down -v
-docker compose down
+docker compose down -v
+# docker compose down
 
 log "run all services from docker compose"
-docker compose up -d
+docker compose up -d --build
 
 sleep 5
 # log "Copy postgres jar, for migrating data from postgres to data lakehouse"
