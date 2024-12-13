@@ -1,11 +1,11 @@
 from pyspark.sql import SparkSession
 
-def migrate(spark, jdbc_url, schema,  table_name):
+def migrate(spark, jdbc_url,  table_name):
     # Read data from PostgreSQL
     print("Reading data from PostgreSQL...")
     postgres_df = spark.read.format('jdbc') \
                     .option("url", jdbc_url) \
-                    .option("dbtable",f"{schema}.public.{table_name}") \
+                    .option("dbtable",f"ecommerce.public.{table_name}") \
                     .option("user","postgres") \
                     .option("password","postgres") \
                     .option("driver","org.postgresql.Driver") \
@@ -15,7 +15,7 @@ def migrate(spark, jdbc_url, schema,  table_name):
     postgres_df.show(5)
 
     # Write data to MinIO in Iceberg format
-    iceberg_table = f"demo.{schema}.{table_name}"
+    iceberg_table = f"demo.dev_raw_ecommerce.{table_name}"
 
     print(f"Writing data to Iceberg table: {iceberg_table}")
     postgres_df \
@@ -41,7 +41,7 @@ if __name__=="__main__":
     # PostgreSQL connection properties
     jdbc_url = "jdbc:postgresql://postgres/ecommerce"
     for table in tables:
-        migrate(spark, jdbc_url, 'ecommerce', table)
+        migrate(spark, jdbc_url, table)
 
     # Stop spark session
     spark.stop()

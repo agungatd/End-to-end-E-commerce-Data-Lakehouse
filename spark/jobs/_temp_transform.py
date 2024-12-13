@@ -46,17 +46,14 @@ def load_dataframe(df, iceberg_table):
         .append()
 
 def etl(spark):
-    EXTRACT_QUERY = ENV['EXTRACT_QUERY']
-    ICEBERG_DB_TABLE = ENV['ICEBERG_DB_TABLE']
-
     print(f"Extracting Data")
-    df = get_dataframe(spark, EXTRACT_QUERY)
+    df = get_dataframe(spark, ENV['EXTRACT_QUERY'])
 
     print("Transforming Data")
     df = transform_dataframe(df)
 
-    print(f"Writing data to Iceberg table: {ICEBERG_DB_TABLE}")
-    load_dataframe(df, ICEBERG_DB_TABLE)
+    print(f"Writing data to Iceberg table")
+    load_dataframe(df, ENV['ICEBERG_DB_TABLE'])
 
     print(f"Data Extraction has completed successfully!")
 
