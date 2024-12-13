@@ -30,13 +30,4 @@ ENV AIRFLOW_ADMIN_PASS ${AIRFLOW_ADMIN_PASS}
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN echo "Creating admin user..."
-RUN airflow users create \
-    --username $AIRFLOW_ADMIN_USER \
-    --firstname $AIRFLOW_ADMIN_FIRST_NAME \
-    --lastname $AIRFLOW_ADMIN_LAST_NAME \
-    --role Admin \
-    --email $AIRFLOW_ADMIN_EMAIL \
-    --password $AIRFLOW_ADMIN_PASS
-
 ENTRYPOINT ["./entrypoint.sh"]
