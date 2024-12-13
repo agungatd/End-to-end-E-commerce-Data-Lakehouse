@@ -1,11 +1,11 @@
-﻿customer_id,name,Gender,email,phone,country,registration_date,acquisition_channel_id
-,John Doe,M,John.Doe@mail.com,+11239879877,US,2020-01-01T07:16:37,11
-,Jane Doe,F,Jane.Doe@mail.com,+11239879871,US,2020-01-02T00:21:00,7
-,Elon Musk,M,Elon.Musk@mail.com,+11239879872,US,2020-01-01T09:46:43,10
-,Bill Gates,M,Bill.Gates@mail.com,+11239879873,US,2020-01-02T16:26:29,1
-,Eleanor Rigby,M,Eleanor.Rigby@mail.com,+441234567891,GB,2020-01-01T18:34:50,5
-,Muhammad Abdullah,M,Muhammad.Abdullah@mail.com,+966123456789,SA,2020-01-03T23:00:14,12
-,Eiichiro Oda,M,Eiichiro.Oda@mail.com,+81123456789,JP,2020-01-01T23:04:31,4
-,Wang Yichen,M,Wang.Yichen@mail.com,+86123456789,CN,2020-01-03T23:50:55,2
-,Sanjaya Putra,M,Sanjaya.Putra@mail.com,+628123456789,ID,2020-01-04T18:04:12,1
-,Daran Tasha,F,Daran.Tasha@mail.com,+7112323456789,RU,2020-01-05T02:23:48,11
+﻿name,Gender,email,phone,country,registration_date,acquisition_channel_id
+John Doe,M,John.Doe@mail.com,+11239879877,US,2020-01-01T07:16:37,11
+Jane Doe,F,Jane.Doe@mail.com,+11239879871,US,2020-01-02T00:21:00,7
+Elon Musk,M,Elon.Musk@mail.com,+11239879872,US,2020-01-01T09:46:43,10
+Bill Gates,M,Bill.Gates@mail.com,+11239879873,US,2020-01-02T16:26:29,1
+Eleanor Rigby,M,Eleanor.Rigby@mail.com,+441234567891,GB,2020-01-01T18:34:50,5
+Muhammad Abdullah,M,Muhammad.Abdullah@mail.com,+966123456789,SA,2020-01-03T23:00:14,12
+Eiichiro Oda,M,Eiichiro.Oda@mail.com,+81123456789,JP,2020-01-01T23:04:31,4
+Wang Yichen,M,Wang.Yichen@mail.com,+86123456789,CN,2020-01-03T23:50:55,2
+Sanjaya Putra,M,Sanjaya.Putra@mail.com,+628123456789,ID,2020-01-04T18:04:12,1
+Daran Tasha,F,Daran.Tasha@mail.com,+7112323456789,RU,2020-01-05T02:23:48,11
