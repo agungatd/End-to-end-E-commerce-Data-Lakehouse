@@ -84,3 +84,20 @@ PARTITIONED BY (days(created_at));
 -- )
 -- USING iceberg
 -- PARTITIONED BY (days(created_at));
+
+CREATE DATABASE IF NOT EXISTS dev_curated_ecommerce;
+CREATE TABLE IF NOT EXISTS dev_curated_ecommerce.customers (
+    customer_id                 bigint NOT NULL COMMENT 'unique id',
+    name                        string,
+    gender                      string,
+    email                       string,
+    phone                       string,
+    country                     string,
+    registration_date           timestamp NOT NULL,
+    acquisition_channel_id      int
+)
+USING iceberg
+PARTITIONED BY (days(registration_date));
+
+CREATE DATABASE IF NOT EXISTS dev_star_ecommerce;
+CREATE DATABASE IF NOT EXISTS dev_analytic_ecommerce;

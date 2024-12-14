@@ -1,6 +1,9 @@
 import os
+import json
 from datetime import datetime
 from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
+from pyspark.sql.types import StringType
 
 
 ENV = {
@@ -10,6 +13,8 @@ ENV = {
     'JDBC_URL': os.getenv('JDBC_URL', ''),
     'ICEBERG_DB_TABLE': os.getenv('ICEBERG_DB_TABLE'),
     'UPSERT_QUERY': os.getenv('UPSERT_QUERY'),
+    'INSERT_METHOD': os.getenv('INSERT_METHOD', 'append'),
+    'PARTITION_BY': os.getenv('PARTITION_BY', 'created_at')
 }
 
 def get_df_postgres(spark, jdbc_url, query):
@@ -35,13 +40,29 @@ def get_dataframe(spark, query):
     return df
 
 def transform_dataframe(df):
-    # implement spark transformations
+    # remove duplicate
+    df.drop_duplicates()
+
+    def map_phone_code(phone, country_code):
+        if phone.startWith('+'):
+            return phone
+
+        with open('./helpers/country_phone_code.json', 'r') as f:
+            data = json.load(f)
+        for c in data:
+            if c['code'] == country_code:
+                return c['dial_code'] + phone
+        return None
+    fix_phone_code_udf = F.udf(map_phone_code, StringType())
+    df = df.withColumn('phone', fix_phone_code_udf(F.col('phone'), F.col('country')))
+
+    # add country code to phone number
     return df
 
 def upsert_dataframe(spark, query):
     spark.sql(query)
         
-def load_dataframe(df, iceberg_table, method='append', **kwargs):
+def load_dataframe(df, iceberg_table, method, **kwargs):
     # Write data to MinIO in Iceberg format
     try:
         if method == 'overwrite':
@@ -63,8 +84,12 @@ def etl(spark):
     df = transform_dataframe(df)
 
     print(f"Writing data to Iceberg table")
-    # load_dataframe(df, ENV['ICEBERG_DB_TABLE'])
-    upsert_dataframe(spark, ENV['UPSERT_QUERY'])
+    load_dataframe(df, 
+                   iceberg_table=ENV['ICEBERG_DB_TABLE'],
+                   method=ENV['INSERT_METHOD'],
+                   partition_by=F.days(ENV['PARTITION_BY'])
+    )
+    # upsert_dataframe(spark, ENV['UPSERT_QUERY'])
 
     print(f"Data Extraction has completed successfully!")
 
