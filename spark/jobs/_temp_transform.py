@@ -1,6 +1,9 @@
 import os
+import json
 from datetime import datetime
 from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
+from pyspark.sql.types import StringType
 
 
 ENV = {
@@ -8,8 +11,11 @@ ENV = {
     'EXTRACT_QUERY': os.getenv('EXTRACT_QUERY', ''),
     'LOAD_QUERY': os.getenv('LOAD_QUERY', ''),
     'JDBC_URL': os.getenv('JDBC_URL', ''),
-    'ICEBERG_DB_TABLE': os.getenv('ICEBERG_DB_TABLE'),
+    'SOURCE_TABLE': os.getenv('SOURCE_TABLE'),
+    'TARGET_TABLE': os.getenv('TARGET_TABLE'),
     'UPSERT_QUERY': os.getenv('UPSERT_QUERY'),
+    'INSERT_METHOD': os.getenv('INSERT_METHOD', 'append'),
+    'PARTITION_BY': os.getenv('PARTITION_BY', 'created_at')
 }
 
 def get_df_postgres(spark, jdbc_url, query):
@@ -22,7 +28,7 @@ def get_df_postgres(spark, jdbc_url, query):
     return df
 
 def get_spark_df(spark):
-    df = spark.table(ENV['ICEBERG_DB_TABLE'])
+    df = spark.table(ENV['SOURCE_TABLE'])
     return df
 
 def get_dataframe(spark, query):
@@ -35,36 +41,50 @@ def get_dataframe(spark, query):
     return df
 
 def transform_dataframe(df):
-    # implement spark transformations
+    # remove duplicate
+    df.drop_duplicates()
+
+    # def fun(x, y):
+    #     pass
+    # udf = F.udf(fun, StringType())
+    # df = df.withColumn('x', udf(F.col('x'), F.col('y')))
+
+    # add country code to phone number
     return df
 
 def upsert_dataframe(spark, query):
     spark.sql(query)
         
-def load_dataframe(df, iceberg_table, method='append', **kwargs):
+def load_dataframe(df, table, method, **kwargs):
     # Write data to MinIO in Iceberg format
     try:
         if method == 'overwrite':
             partition_by = kwargs['partition_by']
             if not partition_by:
                 raise Exception('overwrite method need partition_by column!')
-            df.writeTo(iceberg_table).partitionedBy(partition_by).createOrReplace()
+            df.writeTo(table).partitionedBy(partition_by).createOrReplace()
 
         else:
-            df.writeTo(iceberg_table).append()
+            df.writeTo(table).append()
     except Exception as e:
-        print(f'load_dataframe Error: {e}')
+        raise Exception(f'load_dataframe Error: {e}')
 
 def etl(spark):
     print(f"Extracting Data")
     df = get_dataframe(spark, ENV['EXTRACT_QUERY'])
+    print(f'Data Extracted: \n{df.show(5)}')
 
     print("Transforming Data")
     df = transform_dataframe(df)
+    print(f'Data Transformed: \n{df.show(5)}')
 
     print(f"Writing data to Iceberg table")
-    # load_dataframe(df, ENV['ICEBERG_DB_TABLE'])
-    upsert_dataframe(spark, ENV['UPSERT_QUERY'])
+    load_dataframe(df, 
+                   table=ENV['TARGET_TABLE'],
+                   method=ENV['INSERT_METHOD'],
+                   partition_by=F.days(ENV['PARTITION_BY'])
+    )
+    # upsert_dataframe(spark, ENV['UPSERT_QUERY'])
 
     print(f"Data Extraction has completed successfully!")
 

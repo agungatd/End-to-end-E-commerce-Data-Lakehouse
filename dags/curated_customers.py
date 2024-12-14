@@ -27,23 +27,18 @@ with DAG(
     _start = DummyOperator(task_id='dag_start')
     _end = DummyOperator(task_id='dag_end')
 
-    source_schema = 'dev_raw_ecommerce'
-    target_schema = 'dev_curated_ecommerce'
-    source_table = 'customers'
-    target_table = 'customers'
+    source_table = f"demo.dev_raw_ecommerce.customers"
+    target_table = f"demo.dev_curated_ecommerce.customers"
     extract_query = f'SELECT * FROM {source_table}'
-    iceberg_table = f"demo.{target_schema}.{target_table}"
     spark_job = 'curated_customers.py'
     transform_load_task = SSHOperator(
-        task_id=f'transform_{source_table}',
+        task_id=f'transform_customers',
         ssh_conn_id=SSH_CONN_ID,
         command=f"""{DEFAULT_SPARK_ENV} \
             export SPARK_APPNAME='{f"Template for Extracting table to table: {source_table} -> {target_table}"}' \
             export SOURCE_TABLE={source_table} \
             export TARGET_TABLE={target_table} \
             export EXTRACT_QUERY='{extract_query}' \
-            export ICEBERG_DB_TABLE={iceberg_table} \
-            export INSERT_METHOD=overwrite \
             export PARTITION_BY=created_at \
             && /opt/spark/bin/spark-submit /home/spark/jobs/{spark_job}     
         """
