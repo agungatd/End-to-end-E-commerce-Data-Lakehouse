@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
-from pyspark.sql.types import StringType
+from pyspark.sql.types import StringType, Row, StructType, StructField
 
 
 ENV = {
@@ -44,6 +44,7 @@ def transform_dataframe(df):
     # remove duplicate
     df.drop_duplicates()
 
+    # add dial code to msisdn
     def map_phone_code(phone, country_code):
         if phone.startswith('+'):
             return phone
@@ -56,6 +57,31 @@ def transform_dataframe(df):
         return None
     fix_phone_code_udf = F.udf(map_phone_code, StringType())
     df = df.withColumn('phone', fix_phone_code_udf(F.col('phone'), F.col('country')))
+
+    # seperate first and last name from full name
+    def get_first_last_name(name):
+        names = name.split()
+        if len(names) == 1:
+            return Row('Out1', 'Out2') (names[0], names[0])
+        elif len(names) > 2:
+            return Row('Out1', 'Out2') (names[0], names[-1])
+        else:
+            return Row('Out1', 'Out2') (names[0], names[1])
+    
+    # Assign the structure and naming for newly created columns
+    schema = StructType([StructField("first_name",
+                                    StringType(), False),
+                        StructField("last_name",
+                                    StringType(), False)])
+
+    split_name_udf = F.udf(get_first_last_name, schema)
+    df = df.withColumn("Result",
+                split_name_udf(df["name"]))
+    df = df.select("customer_id", "name",
+                          "gender", "email",
+                          "phone", "country",
+                          "registration_date", "acquisition_channel_id",
+                          "Result.*")
 
     # add country code to phone number
     return df

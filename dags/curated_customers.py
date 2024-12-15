@@ -39,7 +39,8 @@ with DAG(
             export SOURCE_TABLE={source_table} \
             export TARGET_TABLE={target_table} \
             export EXTRACT_QUERY='{extract_query}' \
-            export PARTITION_BY=created_at \
+            export INSERT_METHOD=overwrite \
+            export PARTITION_BY=registration_date \
             && /opt/spark/bin/spark-submit /home/spark/jobs/{spark_job}     
         """
     )
