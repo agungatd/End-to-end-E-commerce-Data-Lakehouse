@@ -11,6 +11,13 @@ airflow users create \
     --role Admin \
     --email $AIRFLOW_ADMIN_EMAIL \
     --password $AIRFLOW_ADMIN_PASS
+
+airflow connections add \
+    --conn-host spark-iceberg
+    --conn-login root
+    --conn-password $SPARK_ICEBERG_PASSWD
+    --conn-type ssh
+    ssh_spark
     
 echo "Starting $1..."
 exec airflow "$1"
