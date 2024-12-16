@@ -33,7 +33,8 @@ log "remove running containers"
 docker compose down
 
 log "run all services from docker compose"
-docker compose --profile lakehouse up -d --build
+# docker compose --profile lakehouse up -d --build
+docker compose --profile lakehouse up -d
 
 sleep 5
 # log "Copy postgres jar, for migrating data from postgres to data lakehouse"
