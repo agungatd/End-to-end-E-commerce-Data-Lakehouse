@@ -16,7 +16,7 @@
     - spark master UI: http://localhost:8080/
     - Jupyter Notebooks: http://localhost:8888/
     - MinIO console: http://localhost:9001/
-    - Metabase: http://localhost:5000/
+    - Metabase: http://localhost:3000/
 ## Steps:
 In medallion architecture ...
 ### 1. Data Extraction (Bronze)
