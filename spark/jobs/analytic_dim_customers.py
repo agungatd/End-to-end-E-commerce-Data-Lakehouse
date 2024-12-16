@@ -33,8 +33,13 @@ def get_spark_df(spark):
 
 def get_dataframe(spark, query):
     jdbc_url = ENV['JDBC_URL']
+    extract_query = ENV['EXTRACT_QUERY']
     if 'postgres' in jdbc_url:
         df = get_df_postgres(spark, jdbc_url, query)
+    elif 'mongo' in jdbc_url:
+        pass
+    elif extract_query != '':
+        df = spark.sql(extract_query)
     else:
         df = get_spark_df(spark)
     
@@ -42,46 +47,20 @@ def get_dataframe(spark, query):
 
 def transform_dataframe(df):
     # remove duplicate
-    df.drop_duplicates()
-
-    # add dial code to msisdn
-    def map_phone_code(phone, country_code):
-        if phone.startswith('+'):
-            return phone
-
-        with open('/home/spark/jobs/helpers/country_phone_code.json', 'r') as f:
-            data = json.load(f)
-        for c in data:
-            if c['code'] == country_code:
-                return c['dial_code'] + phone
-        return None
-    fix_phone_code_udf = F.udf(map_phone_code, StringType())
-    df = df.withColumn('phone', fix_phone_code_udf(F.col('phone'), F.col('country')))
-
-    # seperate first and last name from full name
-    def get_first_last_name(name):
-        names = name.split()
-        if len(names) == 1:
-            return Row('Out1', 'Out2') (names[0], names[0])
-        elif len(names) > 2:
-            return Row('Out1', 'Out2') (names[0], names[-1])
-        else:
-            return Row('Out1', 'Out2') (names[0], names[1])
+    # df.drop_duplicates()
     
-    # Assign the structure and naming for newly created columns
-    schema = StructType([StructField("first_name",
-                                    StringType(), False),
-                        StructField("last_name",
-                                    StringType(), False)])
+    # rename column created_at 
+    df = df.withColumnRenamed('created_at', 'acq_channel_created_at')
 
-    split_name_udf = F.udf(get_first_last_name, schema)
-    df = df.withColumn("Result",
-                split_name_udf(df["name"]))
-    df = df.select("customer_id", "name",
-                          "gender", "email",
-                          "phone", "country",
-                          "registration_date", "acquisition_channel_id",
-                          "Result.*")
+    # drop redundant column (join column)
+    df = df.drop('acquisition_channel_id')
+
+    # create new timestamp column
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    df.withColumn(
+        'created_at',
+        F.unix_timestamp(F.lit(timestamp),'yyyy-MM-dd HH:mm:ss').cast('timestamp')
+    )
 
     # add country code to phone number
     return df
