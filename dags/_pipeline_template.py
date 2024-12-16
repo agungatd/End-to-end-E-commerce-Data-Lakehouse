@@ -9,6 +9,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+ENV = {
+    'pg_user': os.getenv('PG_USER'),
+    'pg_pass': os.getenv('PG_PASS'),
+}
 DEFAULT_SPARK_ENV = f"""
     export AWS_REGION={os.getenv('AWS_REGION')} \
     export AWS_ACCESS_KEY_ID={os.getenv('AWS_ACCESS_KEY_ID')} \
@@ -42,7 +46,7 @@ with DAG(
             export SOURCE_TABLE={source_table} \
             export TARGET_TABLE={target_table} \
             export EXTRACT_QUERY='{extract_query}' \
-            export JDBC_URL={f"jdbc:postgresql://postgres/{source_schema}"} \
+            export JDBC_URL={f"jdbc:postgresql://postgres:5432/{source_schema}?user={ENV['pg_user']}&password={ENV['pg_pass']}"} \
             export ICEBERG_DB_TABLE={iceberg_table} \
             && /opt/spark/bin/spark-submit /home/spark/jobs/{spark_job}     
         """
