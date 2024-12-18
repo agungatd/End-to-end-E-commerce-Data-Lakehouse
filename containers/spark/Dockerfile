@@ -103,7 +103,7 @@ RUN mkdir -p /home/iceberg/data
 RUN mkdir -p /home/iceberg/localwarehouse /home/iceberg/notebooks /home/iceberg/warehouse /home/iceberg/spark-events /home/iceberg
 # COPY notebooks/ /home/iceberg/notebooks
 
-RUN mkdir -p /home/spark /home/spark/jobs
+RUN mkdir -p /home/spark /home/spark/jobs /home/spark/tests
 # COPY spark/jobs /home/spark/jobs
 
 # Add a notebook command

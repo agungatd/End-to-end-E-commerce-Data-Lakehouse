@@ -1,0 +1,89 @@
+.
+├── LICENSE
+├── README.md
+├── containers
+│   ├── airflow
+│   │   ├── Dockerfile
+│   │   ├── entrypoint.sh
+│   │   ├── logs
+│   │   ├── requirements.txt
+│   │   └── secrets
+│   │       ├── connections.temp.yaml
+│   │       ├── connections.yaml
+│   │       ├── variables.temp.yaml
+│   │       └── variables.yaml
+│   ├── flask-api
+│   │   ├── Dockerfile
+│   │   └── app
+│   │       ├── app.py
+│   │       ├── requirements.txt
+│   │       └── simulation.py
+│   ├── metabase
+│   │   ├── data
+│   │   │   └── metabase.db
+│   │   └── plugins
+│   ├── spark
+│   │   ├── Dockerfile
+│   │   ├── docker.env
+│   │   ├── entrypoint.sh
+│   │   ├── ipython
+│   │   │   └── startup
+│   │   │       ├── 00-prettytables.py
+│   │   │       └── README
+│   │   ├── requirements.txt
+│   │   └── spark-defaults.conf
+│   └── trino
+│       ├── catalog
+│       │   └── iceberg.properties
+│       └── plugin
+├── dags
+│   ├── __pycache__
+│   ├── _pipeline_template.py
+│   ├── analytic_dim_customers.py
+│   ├── curated_customers.py
+│   ├── playground.py
+│   ├── raw_extract_postgres.py
+│   └── simple_etl_test.py
+├── data
+│   ├── initial_dummy
+│   │   ├── customer_acquisition_channels.csv
+│   │   ├── customers.csv
+│   │   ├── init.sql
+│   │   ├── inventory.csv
+│   │   ├── marketing_campaigns.csv
+│   │   ├── marketing_expenses.csv
+│   │   ├── order_items.csv
+│   │   ├── orders.csv
+│   │   ├── product_categories.csv
+│   │   └── products.csv
+│   └── warehouse
+├── docker-compose.yaml
+├── docs
+│   ├── other
+│   │   ├── Data.xlsm
+│   │   └── Data.xlsx
+│   └── tech_doc
+│       ├── E-com_postgres_schema.md
+│       └── OLAP_schema.md
+├── install-docker.sh
+├── notebooks
+│   ├── Test.ipynb
+│   └── spark-warehouse
+├── project-structure
+├── spark
+│   ├── jobs
+│   │   ├── _temp_extract.py
+│   │   ├── _temp_transform.py
+│   │   ├── analytic_dim_customers.py
+│   │   ├── curated_customers.py
+│   │   ├── helpers
+│   │   │   └── country_phone_code.json
+│   │   ├── migrate_pg_datalake.py
+│   │   └── raw_extract_postgres.py
+│   ├── sql
+│   │   └── create_tables.sql
+│   └── tests
+├── start.sh
+└── warehouse
+
+218 directories, 54 files
