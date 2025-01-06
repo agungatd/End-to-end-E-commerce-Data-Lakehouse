@@ -163,6 +163,7 @@ cython_debug/
 containers/airflow/logs/scheduler/latest/
 containers/metabase/plugins/*
 logs/*
+data/mongodb/*
 
 secrets/
 

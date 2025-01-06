@@ -68,6 +68,7 @@ services:
   postgres:
     image: postgres:13
     container_name: postgres-db
+    profiles: ["db"]
     environment:
       POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD: ${PG_PASS}
@@ -83,6 +84,24 @@ services:
       - "wal_level=logical"
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 60s
+      retries: 5
+    restart: always
+    networks:
+      default_network:
+  mongodb:
+    image: mongo:7.0.16
+    container_name: mongodb
+    profiles: ["db", "nosql"]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - ./data/mongodb:/data/db
+    ports:
+      - 27017:27017
+    healthcheck:
+      test: echo 'db.runCommand("ping")' | mongo admin -u ${MONGO_INITDB_ROOT_USERNAME} -p ${MONGO_INITDB_ROOT_PASSWORD} --quiet
       interval: 60s
       retries: 5
     restart: always
@@ -135,6 +154,7 @@ services:
       - ./containers/spark/docker.env:/home/spark/docker.env
     env_file: ".env"
     ports:
+      - 7077:7077
       - 8888:8888
       - 8080:8080
       - 10000:10000
@@ -148,6 +168,23 @@ services:
     ports:
       - 8181:8181
     env_file: ".env"
+  spark-connect:
+    image: apache/spark:3.5.3
+    container_name: spark-connect
+    hostname: spark-connect
+    profiles: ["lakehouse", "spark-iceberg", "dashboard"]
+    ports:
+      - "4040:4040"
+      - "15002:15002"
+    depends_on:
+      - spark-iceberg
+    volumes:
+      - ./containers/jars/spark-connect_2.13-3.5.3.jar:/opt/spark/jars/spark-connect_2.13-3.5.3.jar
+      - ./containers/data:/opt/spark/work-dir/spark-warehouse/data:rw
+    command: 
+      - "bash"
+      - "-c"
+      - "/opt/spark/sbin/start-connect-server.sh --jars /opt/spark/jars/spark-connect_2.13-3.5.3.jar && tail -f /dev/null"
 
   minio:
     image: minio/minio
