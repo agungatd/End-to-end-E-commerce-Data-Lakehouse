@@ -89,9 +89,9 @@ services:
     restart: always
     networks:
       default_network:
-  mongodb:
+  mongo:
     image: mongo:7.0.16
-    container_name: mongodb
+    container_name: mongo
     profiles: ["db", "nosql"]
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
@@ -101,7 +101,7 @@ services:
     ports:
       - 27017:27017
     healthcheck:
-      test: echo 'db.runCommand("ping")' | mongo admin -u ${MONGO_INITDB_ROOT_USERNAME} -p ${MONGO_INITDB_ROOT_PASSWORD} --quiet
+      test: echo 'db.runCommand("ping")' | mongo mongo:27017/test --quiet
       interval: 60s
       retries: 5
     restart: always

@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from flask import Flask, request, jsonify
 import requests
@@ -6,6 +7,9 @@ from psycopg2.extras import RealDictCursor
 from pymongo import MongoClient
 
 BASE_URL = "http://localhost:5001/api"
+MONGO_USERNAME = os.getenv('MONGO_INITDB_ROOT_USERNAME', 'root')
+MONGO_PASSWORD = os.getenv('MONGO_INITDB_ROOT_PASSWORD', 'root')
+MONGO_URI = f"mongodb://{MONGO_USERNAME}:{MONGO_PASSWORD}@mongo:27017/"
 
 app = Flask(__name__)
 
@@ -214,10 +218,10 @@ def get_all_customers():
 
 # User Activity
 @app.route('/api/user/activity', methods=['POST'])
-def insert_user_activity(user_id):
+def insert_user_activity():
     try:
         # MongoDB connection
-        client = MongoClient("mongodb://localhost:27017/")  # Replace with your MongoDB URI
+        client = MongoClient(MONGO_URI)
         db = client["ecommerce"]  # Database name
         user_activities_coll = db["user_activities"]  # Collection for storing user activities logs
 
@@ -226,6 +230,7 @@ def insert_user_activity(user_id):
         user_id = data.get('user_id')
         activity_type = data.get('activity_type')
         details = data.get('details', {})
+        timestamp = data.get('timestamp', datetime.now().isoformat())
 
         # Validate the data
         if not user_id or not activity_type:
@@ -235,15 +240,16 @@ def insert_user_activity(user_id):
             "user_id": user_id,
             "activity_type": activity_type,
             "details": details,
-            "timestamp": datetime.now(datetime.timezone.utc).isoformat()
+            "timestamp": timestamp
         }
+        print(f'log: {log_entry}')
         # Insert the document into MongoDB
         result = user_activities_coll.insert_one(log_entry)
 
         # Return success response
         return jsonify({
-            "message": "Purchase logged successfully",
-            "purchase_id": str(result.inserted_id)
+            "message": "User activity logged successfully",
+            "result": result
         }), 201
     except Exception as e:
         return jsonify({'insert user activity error': str(e)}), 400
